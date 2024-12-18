@@ -16,7 +16,7 @@ function createCard(card,deleteCard){
 // @todo: Функция создания карточки
 function renderCard(card){
     const placesList = document.querySelector(".places__list");
-    newCard = createCard(card,deleteCard);
+    const newCard = createCard(card,deleteCard);
     placesList.appendChild(newCard);
 }
 // @todo: Функция удаления карточки
