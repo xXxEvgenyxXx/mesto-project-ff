@@ -20,8 +20,14 @@ module.exports = {
       rules: [
         {
           test: /\.js$/,
-          use: 'babel-loader',
-          exclude: /node_modules/
+          exclude: /(node_modules)/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              presets: ["@babel/preset-env"],
+              plugins: ["@babel/plugin-proposal-object-rest-spread"],
+            },
+          },
         },
         {
           test: /\.(png|jpg|gif|svg|woff2|eot|woff|ttf)$/i,
@@ -32,13 +38,23 @@ module.exports = {
           ],
         },
         {
-          test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, {
-            loader: 'css-loader',
-            options: { importLoaders: 1 }
-          },'postcss-loader']
-        }
-      ]
+          test: /\.html$/i,
+          loader: "html-loader",
+        },
+        {
+          test: /\.css$/i,
+          use: [
+            MiniCssExtractPlugin.loader,
+            {
+              loader: "css-loader",
+              options: {
+                importLoaders: 1,
+              },
+            },
+            "postcss-loader",
+          ],
+        },
+      ],
     },
     plugins: [
       new HtmlWebpackPlugin({
