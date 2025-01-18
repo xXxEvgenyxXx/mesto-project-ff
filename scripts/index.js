@@ -1,5 +1,6 @@
 // @todo: Темплейт карточки
 import '../pages/index.css';
+import {initialCards} from './cards.js';
 function createCard(card,deleteCard){
     const cardTemplate = document.querySelector("#card-template").content;
     const cardItem = cardTemplate.querySelector(".card").cloneNode(true);
