@@ -1,4 +1,4 @@
-export function openModal(modal){ //Добавляем сюда класс .popup_is-opened
+export function openModal(modal){
     modal.classList.add('popup_is-opened')
 }
 

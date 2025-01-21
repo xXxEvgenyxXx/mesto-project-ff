@@ -21,8 +21,17 @@ function handleFormSubmit(evt){
     const newDesc = editDescInput.value;
     profileDescription.textContent = newDesc;
     profileName.textContent = newName;
-
     closeModal(editProfileModal);
+}
+
+function addCard(evt){
+    evt.preventDefault();
+    const newCard = createCard({
+        name: newCardName.value,
+        link: newCardLink.value
+    },deleteCard);
+    console.log(newCard);
+    cardList.prepend(newCard);
 }
 
 const profileName = document.querySelector('.profile__title');
@@ -31,25 +40,31 @@ const editProfileButton = document.querySelector('.profile__edit-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
 const editNameInput = document.querySelector('.popup__input_type_name');
 const editDescInput = document.querySelector('.popup__input_type_description');
-const closeEditProfileButton = document.querySelector('.popup__close');
 const addCardModal = document.querySelector('.popup_type_new-card');
-const addCardButton = document.querySelector('.profile__add-button')
+const addCardButton = document.querySelector('.profile__add-button');
+const newCardName = document.querySelector('.popup__input_type_card-name');
+const newCardLink = document.querySelector('.popup__input_type_url');
+const closeEditButton = document.querySelector('.popup__close');
 const popupButton = document.querySelector('.popup__button');
+const cardList = document.querySelector('.places__list');
 popupButton.addEventListener('click',handleFormSubmit);
-addCardButton.addEventListener('click',function(){
-    openModal(addCardModal);
-})
+popupButton.addEventListener('click',addCard);
 editProfileButton.addEventListener('click',function(){
     openModal(editProfileModal);
 })
-editProfileButton.addEventListener('keydown', evt => {
-    if(evt.key === 'Escape'){
-        closeModal(editProfileModal);
-    }
+addCardButton.addEventListener('click',function(){
+    openModal(addCardModal);
 })
-closeEditProfileButton.addEventListener('click',function(){
+closeEditButton.addEventListener('click',function(){
+    closeModal(addCardModal);
     closeModal(editProfileModal);
 })
+document.addEventListener('keydown', event => {
+    if (event.key === "Escape"){
+        closeModal(editProfileModal);
+        closeModal(addCardModal);
+    };
+  });
 // @todo: Функция создания карточки
 function renderCard(card){
     const placesList = document.querySelector(".places__list");
