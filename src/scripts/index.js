@@ -2,10 +2,12 @@
 import '../pages/index.css';
 import {initialCards} from './cards.js';
 import {openModal,closeModal} from '../components/modal.js';
-function createCard(card,deleteCard){
+function createCard(card,deleteCard,likeEvent){
     const cardTemplate = document.querySelector("#card-template").content;
     const cardItem = cardTemplate.querySelector(".card").cloneNode(true);
     const deleteButton = cardItem.querySelector(".card__delete-button");
+    const likeButton = cardItem.querySelector('.card__like-button');
+    likeButton.addEventListener('click',likeEvent);
     deleteButton.addEventListener('click',() =>{
         deleteCard(cardItem);
     });
@@ -27,38 +29,68 @@ function handleFormSubmit(evt){
 function addCard(evt){
     evt.preventDefault();
     const newCard = createCard({
-        name: newCardName.value,
-        link: newCardLink.value
+        name: addCardName.value,
+        link: addCardLink.value
     },deleteCard);
-    console.log(newCard);
     cardList.prepend(newCard);
+    closeModal(addCardModal);
+}
+
+function likeCard(evt){
+    evt.target.classList.toggle('card__like-button_is-active');
 }
 
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+
+//Константы для редактирования профиля
 const editProfileButton = document.querySelector('.profile__edit-button');
 const editProfileModal = document.querySelector('.popup_type_edit');
-const editNameInput = document.querySelector('.popup__input_type_name');
-const editDescInput = document.querySelector('.popup__input_type_description');
-const addCardModal = document.querySelector('.popup_type_new-card');
-const addCardButton = document.querySelector('.profile__add-button');
-const newCardName = document.querySelector('.popup__input_type_card-name');
-const newCardLink = document.querySelector('.popup__input_type_url');
-const closeEditButton = document.querySelector('.popup__close');
-const popupButton = document.querySelector('.popup__button');
+const editProfileCloseButton = editProfileModal.querySelector('.popup__close');
+const editNameInput = editProfileModal.querySelector('.popup__input_type_name');
+const editDescInput = editProfileModal.querySelector('.popup__input_type_description');
+const editProfilePopupButton = editProfileModal.querySelector('.popup__button');
+
+//Константы для редактирования карточного списка
 const cardList = document.querySelector('.places__list');
-popupButton.addEventListener('click',handleFormSubmit);
-popupButton.addEventListener('click',addCard);
+const addCardButton = document.querySelector('.profile__add-button');
+const addCardModal = document.querySelector('.popup_type_new-card');
+const addCardCloseButton = addCardModal.querySelector('.popup__close');
+const addCardSaveButton = addCardModal.querySelector('.popup__button');
+const addCardName = addCardModal.querySelector('.popup__input_type_card-name');
+const addCardLink = addCardModal.querySelector('.popup__input_type_url');
+
+//Константы для кликабельных картинок
+
+//Константы для лайка. Чтобы врубить лайк на картинке - привязываем лайку класс .card__like-button_is-active
+
+
+//Привязки
+
+//Для редактирования профиля
+editProfilePopupButton.addEventListener('click',handleFormSubmit);
 editProfileButton.addEventListener('click',function(){
     openModal(editProfileModal);
 })
+editProfileCloseButton.addEventListener('click',function(){
+    closeModal(editProfileModal);
+})
+
+//Для добавления карточек
 addCardButton.addEventListener('click',function(){
     openModal(addCardModal);
 })
-closeEditButton.addEventListener('click',function(){
+addCardCloseButton.addEventListener('click',function(){
     closeModal(addCardModal);
-    closeModal(editProfileModal);
 })
+addCardSaveButton.addEventListener('click',addCard);
+
+//Для открывания карточек
+
+//Для лайка
+
+
+//Общие
 document.addEventListener('keydown', event => {
     if (event.key === "Escape"){
         closeModal(editProfileModal);
@@ -68,7 +100,7 @@ document.addEventListener('keydown', event => {
 // @todo: Функция создания карточки
 function renderCard(card){
     const placesList = document.querySelector(".places__list");
-    const newCard = createCard(card,deleteCard);
+    const newCard = createCard(card,deleteCard,likeCard);
     placesList.appendChild(newCard);
 }
 // @todo: Функция удаления карточки
