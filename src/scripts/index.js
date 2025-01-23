@@ -2,7 +2,7 @@
 import '../pages/index.css';
 import {initialCards} from './cards.js';
 import {openModal,closeModal} from '../components/modal.js';
-import { createCard } from './card.js';
+import { createCard } from '../components/card.js';
 // @todo: DOM узлы
 function handleFormSubmit(evt){
     evt.preventDefault();
