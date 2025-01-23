@@ -2,20 +2,7 @@
 import '../pages/index.css';
 import {initialCards} from './cards.js';
 import {openModal,closeModal} from '../components/modal.js';
-function createCard(card,deleteCard,likeEvent){
-    const cardTemplate = document.querySelector("#card-template").content;
-    const cardItem = cardTemplate.querySelector(".card").cloneNode(true);
-    const deleteButton = cardItem.querySelector(".card__delete-button");
-    const likeButton = cardItem.querySelector('.card__like-button');
-    likeButton.addEventListener('click',likeEvent);
-    deleteButton.addEventListener('click',() =>{
-        deleteCard(cardItem);
-    });
-    cardItem.querySelector(".card__image").src = card.link;
-    cardItem.querySelector(".card__image").alt = card.name;
-    cardItem.querySelector(".card__title").textContent = card.name;
-    return cardItem;
-}
+import { createCard } from './card.js';
 // @todo: DOM узлы
 function handleFormSubmit(evt){
     evt.preventDefault();
@@ -31,9 +18,31 @@ function addCard(evt){
     const newCard = createCard({
         name: addCardName.value,
         link: addCardLink.value
-    },deleteCard);
+    },deleteCard,likeCard,openImage);
     cardList.prepend(newCard);
     closeModal(addCardModal);
+}
+
+export function escapeHandler(evt){
+    console.log(evt.target);
+    if (evt.key === "Escape"){
+        const openPopup = document.querySelector('.popup_is-opened');
+        closeModal(openPopup);
+    };
+}
+
+function outsideModalHandler(evt, modal) {
+    if (evt.target === modal) {
+      closeModal(modal);
+    }
+  }
+  
+
+function openImage(cardImage, cardTitle){
+    popupImageModal.querySelector('.popup__image').src = cardImage;
+    popupImageModal.querySelector('.popup__caption').alt = cardTitle;
+    popupImageModal.querySelector('.popup__caption').textContent = cardTitle;
+    openModal(popupImageModal);
 }
 
 function likeCard(evt){
@@ -61,9 +70,8 @@ const addCardName = addCardModal.querySelector('.popup__input_type_card-name');
 const addCardLink = addCardModal.querySelector('.popup__input_type_url');
 
 //Константы для кликабельных картинок
-
-//Константы для лайка. Чтобы врубить лайк на картинке - привязываем лайку класс .card__like-button_is-active
-
+const popupImageModal = document.querySelector('.popup_type_image');
+const popupImageCloseModal = popupImageModal.querySelector('.popup__close');
 
 //Привязки
 
@@ -75,7 +83,9 @@ editProfileButton.addEventListener('click',function(){
 editProfileCloseButton.addEventListener('click',function(){
     closeModal(editProfileModal);
 })
-
+popupImageCloseModal.addEventListener('click',function(){
+    closeModal(popupImageModal);
+})
 //Для добавления карточек
 addCardButton.addEventListener('click',function(){
     openModal(addCardModal);
@@ -91,16 +101,11 @@ addCardSaveButton.addEventListener('click',addCard);
 
 
 //Общие
-document.addEventListener('keydown', event => {
-    if (event.key === "Escape"){
-        closeModal(editProfileModal);
-        closeModal(addCardModal);
-    };
-  });
+document.addEventListener('keydown', escapeHandler);
 // @todo: Функция создания карточки
 function renderCard(card){
     const placesList = document.querySelector(".places__list");
-    const newCard = createCard(card,deleteCard,likeCard);
+    const newCard = createCard(card,deleteCard,likeCard,openImage);
     placesList.appendChild(newCard);
 }
 // @todo: Функция удаления карточки
