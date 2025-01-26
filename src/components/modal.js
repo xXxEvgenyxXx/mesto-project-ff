@@ -9,9 +9,6 @@ export function openModal(modal){
 export function closeModal(modal){
     modal.classList.remove('popup_is-opened');
     modal.removeEventListener('keydown',handleKeyPress);
-    modal.removeEventListener('click',(evt)=> {
-        handleOutsideModal(evt,modal);
-    })
 }
 
 export function handleKeyPress(evt){
