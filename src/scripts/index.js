@@ -23,12 +23,6 @@ function addCard(evt){
     closeModal(addCardModal);
     evt.target.reset();
 }
-
-function outsideModalHandler(evt, modal) {
-    if (evt.target === modal) {
-      closeModal(modal);
-    }
-  }
   
 
 function openImage(cardImage, cardTitle){
