@@ -1,7 +1,7 @@
 // @todo: Темплейт карточки
 import '../pages/index.css';
 import {initialCards} from './cards.js';
-import {openModal,closeModal, handleOutsideModal} from '../components/modal.js';
+import {openModal,closeModal} from '../components/modal.js';
 import { createCard, deleteCard, likeCard } from '../components/card.js';
 // @todo: DOM узлы
 function handleEditProfileForm(evt){
