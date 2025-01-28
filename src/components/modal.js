@@ -1,14 +1,11 @@
 export function openModal(modal){
     modal.classList.add('popup_is-opened');
-    modal.addEventListener('keydown',handleKeyPress);
-    modal.addEventListener('click',(evt)=> {
-        handleOutsideModal(evt,modal);
-    })
+    document.addEventListener('keydown',handleKeyPress);
 }
 
 export function closeModal(modal){
     modal.classList.remove('popup_is-opened');
-    modal.removeEventListener('keydown',handleKeyPress);
+    document.removeEventListener('keydown',handleKeyPress);
 }
 
 export function handleKeyPress(evt){
@@ -16,9 +13,4 @@ export function handleKeyPress(evt){
         const openPopup = document.querySelector('.popup_is-opened'); 
         closeModal(openPopup); 
     }
-}
-function handleOutsideModal(evt,modal){
-    if (evt.target === modal) { 
-        closeModal(modal); 
-      } 
 }

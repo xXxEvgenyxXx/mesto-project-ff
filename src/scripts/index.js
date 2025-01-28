@@ -1,7 +1,7 @@
 // @todo: Темплейт карточки
 import '../pages/index.css';
 import {initialCards} from './cards.js';
-import {openModal,closeModal, handleKeyPress} from '../components/modal.js';
+import {openModal,closeModal, handleOutsideModal} from '../components/modal.js';
 import { createCard, deleteCard, likeCard } from '../components/card.js';
 // @todo: DOM узлы
 function handleEditProfileForm(evt){
@@ -43,9 +43,6 @@ const editNameInput = editProfileModal.querySelector('.popup__input_type_name');
 const editDescInput = editProfileModal.querySelector('.popup__input_type_description');
 const editProfileForm = editProfileModal.querySelector('.popup__form');
 
-editNameInput.value = profileName.textContent;
-editDescInput.value = profileDescription.textContent;
-
 //Константы для редактирования карточного списка
 const cardList = document.querySelector('.places__list');
 const addCardButton = document.querySelector('.profile__add-button');
@@ -61,6 +58,8 @@ const popupImage = popupImageModal.querySelector('.popup__image');
 const popupImageCaption = popupImageModal.querySelector('.popup__caption')
 const popupImageCloseModal = popupImageModal.querySelector('.popup__close');
 
+const popups = document.querySelectorAll('.popup');
+
 //Привязки
 
 //Для редактирования профиля
@@ -68,6 +67,8 @@ editProfileForm.addEventListener('submit',(event)=>{
     handleEditProfileForm(event);
 });
 editProfileButton.addEventListener('click',function(){
+    editNameInput.value = profileName.textContent;
+    editDescInput.value = profileDescription.textContent;
     openModal(editProfileModal);
 })
 editProfileCloseButton.addEventListener('click',function(){
@@ -84,8 +85,14 @@ addCardCloseButton.addEventListener('click',function(){
     closeModal(addCardModal);
 })
 addCardForm.addEventListener('submit',addCard);
-document.addEventListener('keydown', handleKeyPress);
 
+popups.forEach(popup => {
+    popup.addEventListener('click',(evt)=>{
+        if(evt.target.classList.contains('popup')){
+            closeModal(popup);
+        }
+    })
+});
 
 // @todo: Функция создания карточки
 function renderCard(card){
