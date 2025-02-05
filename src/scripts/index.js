@@ -3,6 +3,7 @@ import '../pages/index.css';
 import {initialCards} from './cards.js';
 import {openModal,closeModal} from '../components/modal.js';
 import { createCard, deleteCard, likeCard } from '../components/card.js';
+import { enableValidation, clearValidation } from '../components/validation.js';
 // @todo: DOM узлы
 function handleEditProfileForm(evt){
     evt.preventDefault();
@@ -31,7 +32,14 @@ function openImage(cardImage, cardTitle){
     popupImageCaption.textContent = cardTitle;
     openModal(popupImageModal);
 }
-
+const validationConfig = {
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    submitButtonSelector: '.popup__button',
+    inactiveButtonClass: 'popup__button_disabled',
+    inputErrorClass: 'popup__input_type_error',
+    errorClass: 'popup__error_visible'
+  }
 const profileName = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
 
@@ -60,8 +68,6 @@ const popupImageCloseModal = popupImageModal.querySelector('.popup__close');
 
 const popups = document.querySelectorAll('.popup');
 
-//Привязки
-
 //Для редактирования профиля
 editProfileForm.addEventListener('submit',(event)=>{
     handleEditProfileForm(event);
@@ -69,6 +75,7 @@ editProfileForm.addEventListener('submit',(event)=>{
 editProfileButton.addEventListener('click',function(){
     editNameInput.value = profileName.textContent;
     editDescInput.value = profileDescription.textContent;
+    clearValidation(editProfileForm,validationConfig);
     openModal(editProfileModal);
 })
 editProfileCloseButton.addEventListener('click',function(){
@@ -79,12 +86,15 @@ popupImageCloseModal.addEventListener('click',function(){
 })
 //Для добавления карточек
 addCardButton.addEventListener('click',function(){
+    clearValidation(addCardForm,validationConfig);
     openModal(addCardModal);
 })
 addCardCloseButton.addEventListener('click',function(){
     closeModal(addCardModal);
 })
 addCardForm.addEventListener('submit',addCard);
+
+enableValidation(validationConfig); 
 
 popups.forEach(popup => {
     popup.addEventListener('click',(evt)=>{
