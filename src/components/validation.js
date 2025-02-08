@@ -12,7 +12,7 @@ export function clearValidation(form, validationConfig) {
 
     inputs.forEach(input => {
         const errorElement = form.querySelector(`#${input.id}-error`);
-        hideInputError(input, errorElement, validationConfig);
+        hideError(input, errorElement, validationConfig);
     });
 
     submitButton.classList.add(validationConfig.inactiveButtonClass);
@@ -37,9 +37,9 @@ function checkInputValidity(form, input, validationConfig) {
     const isValid = input.validity.valid && validateInputContent(input);
 
     if (!isValid) {
-        showInputError(input, errorElement, validationConfig);
+        showError(input, errorElement, validationConfig);
     } else {
-        hideInputError(input, errorElement, validationConfig);
+        hideError(input, errorElement, validationConfig);
     }
 }
   
@@ -51,13 +51,13 @@ function validateInputContent(input) {
     return true;
 }
 
-function showInputError(input, errorElement, validationConfig) {
+function showError(input, errorElement, validationConfig) {
     input.classList.add(validationConfig.inputErrorClass);
     errorElement.textContent = input.validationMessage || input.dataset.errorMessage;
     errorElement.classList.add(validationConfig.errorClass);
 }
 
-function hideInputError(input, errorElement, validationConfig) {
+function hideError(input, errorElement, validationConfig) {
     input.classList.remove(validationConfig.inputErrorClass);
     errorElement.textContent = '';
     errorElement.classList.remove(validationConfig.errorClass);
