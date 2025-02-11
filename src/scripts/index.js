@@ -4,8 +4,7 @@ import '../pages/index.css';
 import {openModal,closeModal} from '../components/modal.js';
 import { createCard, deleteCard, likeCard } from '../components/card.js';
 import { enableValidation, clearValidation } from '../components/validation.js';
-import { getInitialCards,getUserData } from './api.js';
-
+import { getInitialCards,getUserData,updateProfile, updateAvatar } from './api.js';
 // @todo: DOM узлы
 function handleEditProfileForm(evt){
     evt.preventDefault();
@@ -13,36 +12,18 @@ function handleEditProfileForm(evt){
     const newDesc = editDescInput.value;
     profileDescription.textContent = newDesc;
     profileName.textContent = newName;
-    fetch('https://nomoreparties.co/v1/wff-cohort-31/users/me', {
-        method: 'PATCH',
-        headers: {
-          authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name: newName,
-          about: newDesc
-        })
-      });
-    closeModal(editProfileModal);
+    updateProfile(newName, newDesc)
+        .then(() => closeModal(editProfileModal))
+        .catch(err => console.error(err));
 }
 
 function handleEditAvatarForm(evt){
     evt.preventDefault();
     const newAvatar = editAvatarInput.value;
     profileAvatar.style.backgroundImage = `url(${newAvatar})`;
-    fetch('https://nomoreparties.co/v1/wff-cohort-31/users/me/avatar', {
-        method: 'PATCH',
-        headers: {
-          authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          avatar:newAvatar
-        })
-      });
-
-    closeModal(popupEditAvatar);
+    updateAvatar(newAvatar)
+        .then(() => closeModal(popupEditAvatar))
+        .catch(err => console.error(err));
 }
 
 function addCard(evt){
