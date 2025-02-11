@@ -4,7 +4,7 @@ import '../pages/index.css';
 import {openModal,closeModal} from '../components/modal.js';
 import { createCard, deleteCard, likeCard } from '../components/card.js';
 import { enableValidation, clearValidation } from '../components/validation.js';
-import { getInitialCards,getUserData,updateProfile, updateAvatar } from './api.js';
+import { getInitialCards,getUserData,updateProfile, updateAvatar, addCardToServer } from './api.js';
 // @todo: DOM узлы
 function handleEditProfileForm(evt){
     evt.preventDefault();
@@ -28,24 +28,21 @@ function handleEditAvatarForm(evt){
 
 function addCard(evt){
     evt.preventDefault();
-    const newCard = createCard({
+    
+    const cardData = {
         name: addCardName.value,
         link: addCardLink.value
-    },deleteCard,likeCard,openImage);
+    };
+
+    const newCard = createCard(cardData, deleteCard, likeCard, openImage);
     cardList.prepend(newCard);
-    fetch('https://nomoreparties.co/v1/wff-cohort-31/cards', {
-        method: 'POST',
-        headers: {
-          authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          name:addCardName.value,
-          link:addCardLink.value
+
+    addCardToServer(cardData)
+        .then(() => {
+            closeModal(addCardModal);
+            evt.target.reset();
         })
-      }); 
-    closeModal(addCardModal);
-    evt.target.reset();
+        .catch(err => console.error(err));
 }
   
 
@@ -102,9 +99,7 @@ const editAvatarForm = popupEditAvatar.querySelector('.popup__form');
 
 //Для редактирования профиля
 editProfileForm.addEventListener('submit',(event)=>{
-    editProfileForm.querySelector('.popup__button').textContent = 'Сохранение...'
     handleEditProfileForm(event);
-    editProfileForm.querySelector('.popup__button').textContent = 'Сохранить'
 });
 editAvatarForm.addEventListener('submit',handleEditAvatarForm);
 editProfileButton.addEventListener('click',function(){
@@ -131,14 +126,6 @@ addCardForm.addEventListener('submit',addCard);
 
 //Для редактирования авы
 editAvatarButton.addEventListener('click',function(){
-    getUserData()
-        .then(userData =>{
-            editAvatarInput.value = userData.avatar
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-    //editAvatarInput.value = 
     openModal(popupEditAvatar);
 })
 editAvatarCloseModal.addEventListener('click',function(){
@@ -166,25 +153,20 @@ function renderCard(card, likesCounter, isMyCard, cardID){
 
 let userID;
 
-getUserData()
-    .then(userData =>{
+Promise.all([getUserData(), getInitialCards()])
+    .then(([userData, cardsArray]) => {
+        // Обработка данных пользователя
         profileName.textContent = userData.name;
         profileDescription.textContent = userData.about;
-        profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
+        profileAvatar.style.backgroundImage = `url(${userData.avatar})`; // Исправлено: добавлены обратные кавычки
         userID = userData._id;
+        cardsArray.forEach(cardElement => {
+            renderCard({
+                name: cardElement.name,
+                link: cardElement.link,
+            }, cardElement.likes.length, cardElement.owner._id === userID, cardElement._id);
+        });
     })
     .catch((err) => {
-        console.log(err);
-    })
-getInitialCards()
-  .then((cardsArray) => {
-    cardsArray.forEach(cardElement => {
-        renderCard({
-            name:cardElement.name,
-            link:cardElement.link,
-        },cardElement.likes.length, cardElement.owner._id === userID,cardElement._id);
+        console.log(err); // выводим ошибку в консоль
     });
-  })
-  .catch((err) => {
-    console.log(err); // выводим ошибку в консоль
-  }); 

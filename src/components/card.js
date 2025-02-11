@@ -1,3 +1,5 @@
+import { addLike,removeLike } from "../scripts/api";
+
 export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, isMyCard, cardID){
     const cardTemplate = document.querySelector("#card-template").content;
     const cardItem = cardTemplate.querySelector(".card").cloneNode(true);
@@ -14,8 +16,8 @@ export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, is
     cardImage.addEventListener('click', () => {
         cardEvent(cardImageLink, cardTitle);
     });
-    likeButton.addEventListener('click',(evt)=>{
-        likeEvent(evt,cardID)
+    likeButton.addEventListener('click',()=>{
+        likeEvent(likeButton, cardlikesCounter, cardID)
     });
     if(isMyCard){
         deleteButton.addEventListener('click',() =>{
@@ -40,32 +42,15 @@ export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, is
 export function deleteCard(card){
     card.remove();
 }
+export function likeCard(likeButton, likesCounter, cardID) {
+  const isLiked = likeButton.classList.toggle('card__like-button_is-active');
 
-export function likeCard(evt,cardID){
-    evt.target.classList.toggle('card__like-button_is-active');
-    console.log(evt.target.classList.contains('card__like-button_is-active'))
-    if(evt.target.classList.contains('card__like-button_is-active')){
-        fetch(`https://nomoreparties.co/v1/wff-cohort-31/cards/likes/${cardID}`, {
-            method: 'PUT',
-            headers: {
-              authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              id:cardID
-            })
-          }); 
-    }
-    else{
-        fetch(`https://nomoreparties.co/v1/wff-cohort-31/cards/likes/${cardID}`, {
-            method: 'DELETE',
-            headers: {
-              authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              id:cardID
-            })
-          }); 
-    }
+  const fetchLike = isLiked ? addLike(cardID) : removeLike(cardID);
+
+  fetchLike
+      .then(data => {
+          // Обновляем счетчик лайков на основе ответа от сервера
+          likesCounter.textContent = data.likes.length; // Предполагаем, что сервер возвращает обновленный массив лайков
+      })
+      .catch(err => console.log(err));
 }
