@@ -151,20 +151,17 @@ function renderCard(card, likesCounter, isMyCard, cardID){
 }
 // @todo: Вывести карточки на страницу
 
-let userID;
-
 Promise.all([getUserData(), getInitialCards()])
     .then(([userData, cardsArray]) => {
         // Обработка данных пользователя
         profileName.textContent = userData.name;
         profileDescription.textContent = userData.about;
-        profileAvatar.style.backgroundImage = `url(${userData.avatar})`; // Исправлено: добавлены обратные кавычки
-        userID = userData._id;
+        profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
         cardsArray.forEach(cardElement => {
             renderCard({
                 name: cardElement.name,
                 link: cardElement.link,
-            }, cardElement.likes.length, cardElement.owner._id === userID, cardElement._id);
+            }, cardElement.likes.length, cardElement.owner._id === userData._id, cardElement._id);
         });
     })
     .catch((err) => {

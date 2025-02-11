@@ -1,4 +1,4 @@
-import { addLike,removeLike } from "../scripts/api";
+import { addLike,removeLike, removeCard } from "../scripts/api";
 
 export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, isMyCard, cardID){
     const cardTemplate = document.querySelector("#card-template").content;
@@ -21,17 +21,10 @@ export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, is
     });
     if(isMyCard){
         deleteButton.addEventListener('click',() =>{
-            deleteCard(cardItem);
-            fetch(`https://nomoreparties.co/v1/wff-cohort-31/cards/${cardID}`, {
-                method: 'DELETE',
-                headers: {
-                  authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  id:cardID
-                })
-              }); 
+            removeCard(cardID)
+              .then(()=>{
+                deleteCard(cardItem);
+              })
         });
     }
     else{

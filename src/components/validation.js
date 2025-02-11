@@ -25,8 +25,8 @@ function setEventListeners(form, validationConfig) {
 
     inputs.forEach(input => {
         input.addEventListener('input', () => {
-        checkInputValidity(form, input, validationConfig);
-        toggleButtonState(inputs, submitButton, validationConfig);
+            checkInputValidity(form, input, validationConfig);
+            toggleButtonState(inputs, submitButton, validationConfig);
         });
     });
     toggleButtonState(inputs, submitButton, validationConfig);
@@ -42,18 +42,25 @@ function checkInputValidity(form, input, validationConfig) {
         hideError(input, errorElement, validationConfig);
     }
 }
-  
+
 function validateInputContent(input) {
-    if (input.name === 'place-name' || input.name === 'name') {
-        const regex = /^[a-zA-Zа-яА-Я\s-]+$/;
-        return regex.test(input.value);
-      }
-    return true;
+    const errorMessage = input.dataset.errorMessage;
+    const errorSpan = document.getElementById(`${input.id}-error`);
+
+    if (input.validity.patternMismatch) {
+        errorSpan.textContent = errorMessage;
+        errorSpan.classList.add('popup__error_visible');
+        return false;
+    } else {
+        errorSpan.textContent = '';
+        errorSpan.classList.remove('popup__error_visible');
+        return true;
+    }
 }
 
 function showError(input, errorElement, validationConfig) {
     input.classList.add(validationConfig.inputErrorClass);
-    errorElement.textContent = input.validationMessage || input.dataset.errorMessage;
+    errorElement.textContent = input.dataset.errorMessage || input.validationMessage;
     errorElement.classList.add(validationConfig.errorClass);
 }
 

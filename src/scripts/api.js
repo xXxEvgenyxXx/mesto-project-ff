@@ -20,6 +20,16 @@ export function getInitialCards(){
     .then(checkResponse);
 }
 
+export function removeCard(cardID){
+    return fetch(`${config.baseUrl}/cards/${cardID}`, {
+        method: 'DELETE',
+        headers: config.headers,
+        body: JSON.stringify({
+            id:cardID
+          })
+    }).then(checkResponse);
+}
+
 export function updateProfile(name, about) {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
