@@ -37,13 +37,16 @@ export function deleteCard(card){
 }
 export function likeCard(likeButton, likesCounter, cardID) {
   const isLiked = likeButton.classList.toggle('card__like-button_is-active');
-
-  const fetchLike = isLiked ? addLike(cardID) : removeLike(cardID);
-
-  fetchLike
-      .then(data => {
-          // Обновляем счетчик лайков на основе ответа от сервера
-          likesCounter.textContent = data.likes.length; // Предполагаем, что сервер возвращает обновленный массив лайков
+  if(isLiked){
+    addLike(cardID).then(data => {
+        likesCounter.textContent = data.likes.length; // Предполагаем, что сервер возвращает обновленный массив лайков
       })
       .catch(err => console.log(err));
+  }
+  else {
+    removeLike(cardID).then(data => {
+        likesCounter.textContent = data.likes.length; // Предполагаем, что сервер возвращает обновленный массив лайков
+      })
+      .catch(err => console.log(err));
+  }
 }
