@@ -39,13 +39,13 @@ export function likeCard(likeButton, likesCounter, cardID) {
   const isLiked = likeButton.classList.toggle('card__like-button_is-active');
   if(isLiked){
     addLike(cardID).then(data => {
-        likesCounter.textContent = data.likes.length; // Предполагаем, что сервер возвращает обновленный массив лайков
+        likesCounter.textContent = data.likes.length;
       })
       .catch(err => console.log(err));
   }
   else {
     removeLike(cardID).then(data => {
-        likesCounter.textContent = data.likes.length; // Предполагаем, что сервер возвращает обновленный массив лайков
+        likesCounter.textContent = data.likes.length;
       })
       .catch(err => console.log(err));
   }
