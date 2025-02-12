@@ -8,15 +8,32 @@ import { getInitialCards,getUserData,updateProfile, updateAvatar, addCardToServe
 
 let userID;
 // @todo: DOM узлы
-function handleEditProfileForm(evt){
+function handleEditProfileForm(evt) {
     evt.preventDefault();
+    
+    // Отображаем индикатор загрузки
+    const submitButton = evt.target.querySelector('button[type="submit"]');
+    const initialButtonText = submitButton.textContent;
+    submitButton.textContent = 'Сохранение...';
+    
     const newName = editNameInput.value;
     const newDesc = editDescInput.value;
-    profileDescription.textContent = newDesc;
-    profileName.textContent = newName;
+
     updateProfile(newName, newDesc)
-        .then(() => closeModal(editProfileModal))
-        .catch(err => console.error(err));
+        .then(() => {
+            // Если запрос успешен, обновляем информацию на странице
+            profileDescription.textContent = newDesc;
+            profileName.textContent = newName;
+            closeModal(editProfileModal); // Закрываем попап
+        })
+        .catch(err => {
+            console.error(err);
+            // Здесь можно добавить уведомление пользователю о том, что произошла ошибка
+        })
+        .finally(() => {
+            // В любом случае возвращаем текст кнопки на начальный
+            submitButton.textContent = initialButtonText;
+        });
 }
 
 function handleEditAvatarForm(evt){
