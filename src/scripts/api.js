@@ -33,10 +33,7 @@ export function removeCard(cardID){
 export function updateProfile(name, about) {
     return fetch(`${config.baseUrl}/users/me`, {
         method: 'PATCH',
-        headers: {
-            authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             name: name,
             about: about
@@ -48,10 +45,7 @@ export function updateProfile(name, about) {
 export function addCardToServer(cardData) {
     return fetch(`${config.baseUrl}/cards`, {
         method: 'POST',
-        headers: {
-            authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify(cardData)
     })
     .then(checkResponse);
@@ -60,10 +54,7 @@ export function addCardToServer(cardData) {
 export function updateAvatar(newAvatar) {
     return fetch(`${config.baseUrl}/users/me/avatar`, {
         method: 'PATCH',
-        headers: {
-            authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({
             avatar: newAvatar
         })
@@ -74,10 +65,7 @@ export function updateAvatar(newAvatar) {
 export function addLike(cardID){
     return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
         method: 'PUT',
-        headers: {
-            authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({ id: cardID })
     }).then(checkResponse);
 }
@@ -85,10 +73,7 @@ export function addLike(cardID){
 export function removeLike(cardID){
     return fetch(`${config.baseUrl}/cards/likes/${cardID}`, {
         method: 'DELETE',
-        headers: {
-            authorization: '2cd377c0-3859-41d5-99fa-922ec3473d0e',
-            'Content-Type': 'application/json'
-        },
+        headers: config.headers,
         body: JSON.stringify({ id: cardID })
     }).then(checkResponse);
 }
