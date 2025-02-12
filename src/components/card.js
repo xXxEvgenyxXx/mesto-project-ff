@@ -1,6 +1,6 @@
 import { addLike,removeLike, removeCard } from "../scripts/api";
 
-export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, isMyCard, cardID){
+export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, isMyCard, cardID, userID){
     const cardTemplate = document.querySelector("#card-template").content;
     const cardItem = cardTemplate.querySelector(".card").cloneNode(true);
     const cardImage = cardItem.querySelector('.card__image');
@@ -13,27 +13,32 @@ export function createCard(card,deleteCard,likeEvent,cardEvent, likesCounter, is
     cardItem.querySelector(".card__title").textContent = card.name;
     const deleteButton = cardItem.querySelector(".card__delete-button");
     const likeButton = cardItem.querySelector('.card__like-button');
+    const cardLikes = card.likes;
+    cardLikes.forEach(likeOwner => {
+      if(likeOwner._id === userID){
+        likeButton.classList.add('card__like-button_is-active');
+      }
+    });
+    deleteButton.addEventListener('click',() =>{
+      deleteCard(cardItem,cardID)
+    });
     cardImage.addEventListener('click', () => {
         cardEvent(cardImageLink, cardTitle);
     });
     likeButton.addEventListener('click',()=>{
         likeEvent(likeButton, cardlikesCounter, cardID)
     });
-    if(isMyCard){
-        deleteButton.addEventListener('click',() =>{
-            removeCard(cardID)
-              .then(()=>{
-                deleteCard(cardItem);
-              })
-        });
-    }
-    else{
-        deleteButton.classList.add('card__delete-button-disabled');
+    if(!isMyCard){
+      deleteButton.classList.add('card__delete-button-disabled');
     }
     return cardItem;
 }
-export function deleteCard(card){
-    card.remove();
+export function deleteCard(card, cardID){
+  removeCard(cardID)
+    .then(()=>{
+      card.remove();
+    })
+    .catch(err => console.log(err));
 }
 export function likeCard(likeButton, likesCounter, cardID) {
   const isLiked = likeButton.classList.toggle('card__like-button_is-active');

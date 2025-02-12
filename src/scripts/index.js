@@ -12,7 +12,7 @@ function handleEditProfileForm(evt) {
     evt.preventDefault();
     
     // Отображаем индикатор загрузки
-    const submitButton = evt.target.querySelector('button[type="submit"]');
+    const submitButton = evt.target.querySelector('.popup__button');
     const initialButtonText = submitButton.textContent;
     submitButton.textContent = 'Сохранение...';
     
@@ -38,30 +38,43 @@ function handleEditProfileForm(evt) {
 
 function handleEditAvatarForm(evt){
     evt.preventDefault();
+    const submitButton = evt.target.querySelector('.popup__button');
+    const initialButtonText = submitButton.textContent;
+    submitButton.textContent = 'Сохранение...';
     const newAvatar = editAvatarInput.value;
-    profileAvatar.style.backgroundImage = `url(${newAvatar})`;
     updateAvatar(newAvatar)
-        .then(() => closeModal(popupEditAvatar))
-        .catch(err => console.error(err));
+        .then(() => {
+            profileAvatar.style.backgroundImage = `url(${newAvatar})`;
+            evt.target.reset();
+            clearValidation(evt.target,validationConfig);
+            closeModal(popupEditAvatar)
+        })
+        .catch(err => console.error(err))
+        .finally(()=>{
+            submitButton.textContent = initialButtonText;
+        });
 }
 
 function addCard(evt){
     evt.preventDefault();
-    
+    const submitButton = evt.target.querySelector('.popup__button');
+    const initialButtonText = submitButton.textContent;
+    submitButton.textContent = 'Создание...';
     const cardData = {
         name: addCardName.value,
         link: addCardLink.value
     };
-
-    const newCard = createCard(cardData, deleteCard, likeCard, openImage);
-    cardList.prepend(newCard);
-
     addCardToServer(cardData)
-        .then(() => {
+        .then((card) => {
+            const newCard = createCard(card, deleteCard, likeCard, openImage,card.likes.length, card.owner._id,card._id, userID);
+            cardList.prepend(newCard);
             closeModal(addCardModal);
             evt.target.reset();
         })
-        .catch(err => console.error(err));
+        .catch(err => console.log(err))
+        .finally(()=>{
+            submitButton.textContent = initialButtonText;
+        });;
 }
   
 
@@ -165,7 +178,7 @@ popups.forEach(popup => {
 // @todo: Функция создания карточки
 function renderCard(card, likesCounter, isMyCard, cardID){
     const placesList = document.querySelector(".places__list");
-    const newCard = createCard(card,deleteCard,likeCard,openImage,likesCounter, isMyCard,cardID);
+    const newCard = createCard(card,deleteCard,likeCard,openImage,likesCounter, isMyCard,cardID, userID);
     placesList.appendChild(newCard);
 }
 // @todo: Вывести карточки на страницу
@@ -178,10 +191,7 @@ Promise.all([getUserData(), getInitialCards()])
         profileDescription.textContent = userData.about;
         profileAvatar.style.backgroundImage = `url(${userData.avatar})`;
         cardsArray.forEach(cardElement => {
-            renderCard({
-                name: cardElement.name,
-                link: cardElement.link,
-            }, cardElement.likes.length, cardElement.owner._id === userID, cardElement._id);
+            renderCard(cardElement, cardElement.likes.length, cardElement.owner._id === userID, cardElement._id);
         });
     })
     .catch((err) => {
