@@ -60,7 +60,14 @@ function validateInputContent(input) {
 
 function showError(input, errorElement, validationConfig) {
     input.classList.add(validationConfig.inputErrorClass);
-    errorElement.textContent = input.dataset.errorMessage || input.validationMessage;
+    console.log(input.validity.patternMismatch);
+    //errorElement.textContent = input.validationMessage || input.dataset.errorMessage ;
+    if(input.validity.patternMismatch){
+        errorElement.textContent = input.dataset.errorMessage
+    }
+    else {
+        errorElement.textContent = input.validationMessage;
+    }
     errorElement.classList.add(validationConfig.errorClass);
 }
 
