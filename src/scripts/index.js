@@ -5,6 +5,8 @@ import {openModal,closeModal} from '../components/modal.js';
 import { createCard, deleteCard, likeCard } from '../components/card.js';
 import { enableValidation, clearValidation } from '../components/validation.js';
 import { getInitialCards,getUserData,updateProfile, updateAvatar, addCardToServer } from './api.js';
+
+let userID;
 // @todo: DOM узлы
 function handleEditProfileForm(evt){
     evt.preventDefault();
@@ -153,6 +155,7 @@ function renderCard(card, likesCounter, isMyCard, cardID){
 
 Promise.all([getUserData(), getInitialCards()])
     .then(([userData, cardsArray]) => {
+        userID = userData._id
         // Обработка данных пользователя
         profileName.textContent = userData.name;
         profileDescription.textContent = userData.about;
@@ -161,7 +164,7 @@ Promise.all([getUserData(), getInitialCards()])
             renderCard({
                 name: cardElement.name,
                 link: cardElement.link,
-            }, cardElement.likes.length, cardElement.owner._id === userData._id, cardElement._id);
+            }, cardElement.likes.length, cardElement.owner._id === userID, cardElement._id);
         });
     })
     .catch((err) => {
