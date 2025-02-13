@@ -34,7 +34,7 @@ function setEventListeners(form, validationConfig) {
   
 function checkInputValidity(form, input, validationConfig) {
     const errorElement = form.querySelector(`#${input.id}-error`);
-    const isValid = input.validity.valid && validateInputContent(input);
+    const isValid = input.validity.valid && validateInputContent(input,validationConfig.errorClass);
 
     if (!isValid) {
         showError(input, errorElement, validationConfig);
@@ -43,17 +43,17 @@ function checkInputValidity(form, input, validationConfig) {
     }
 }
 
-function validateInputContent(input) {
+function validateInputContent(input,errorClass) {
     const errorMessage = input.dataset.errorMessage;
     const errorSpan = document.getElementById(`${input.id}-error`);
 
     if (input.validity.patternMismatch) {
         errorSpan.textContent = errorMessage;
-        errorSpan.classList.add('popup__error_visible');
+        errorSpan.classList.add(errorClass);
         return false;
     } else {
         errorSpan.textContent = '';
-        errorSpan.classList.remove('popup__error_visible');
+        errorSpan.classList.remove(errorClass);
         return true;
     }
 }
@@ -77,7 +77,7 @@ function hideError(input, errorElement, validationConfig) {
 }
 
 function toggleButtonState(inputs, submitButton, validationConfig) {
-    const hasInvalidInput = Array.from(inputs).some(input => !input.validity.valid || !validateInputContent(input));
+    const hasInvalidInput = Array.from(inputs).some(input => !input.validity.valid || !validateInputContent(input,validationConfig.errorClass));
 
     if (hasInvalidInput) {
         submitButton.classList.add(validationConfig.inactiveButtonClass);

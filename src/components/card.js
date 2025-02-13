@@ -41,15 +41,18 @@ export function deleteCard(card, cardID){
     .catch(err => console.log(err));
 }
 export function likeCard(likeButton, likesCounter, cardID) {
-  const isLiked = likeButton.classList.toggle('card__like-button_is-active');
-  if(isLiked){
-    addLike(cardID).then(data => {
-        likesCounter.textContent = data.likes.length;
+  const isLiked = likeButton.classList.contains('card__like-button_is-active');
+  if (isLiked) {
+    removeLike(cardID)
+      .then(data => {
+        likeButton.classList.remove('card__like-button_is-active'); 
+        likesCounter.textContent = data.likes.length; 
       })
       .catch(err => console.log(err));
-  }
-  else {
-    removeLike(cardID).then(data => {
+  } else {
+    addLike(cardID)
+      .then(data => {
+        likeButton.classList.add('card__like-button_is-active'); 
         likesCounter.textContent = data.likes.length;
       })
       .catch(err => console.log(err));
